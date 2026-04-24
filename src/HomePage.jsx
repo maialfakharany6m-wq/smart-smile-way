@@ -21,35 +21,30 @@ function Cursor() {
 
   return (
     <>
-      <div ref={cursorRef} className="fixed w-3 h-3 bg-white rounded-full z-[9999] pointer-events-none mix-blend-difference" />
-      <div ref={followerRef} className="fixed w-8 h-8 border border-white/30 rounded-full z-[9998] pointer-events-none" />
+      <div ref={cursorRef} className="fixed w-2.5 h-2.5 bg-[#1E3A8A] rounded-full z-[9999] pointer-events-none mix-blend-difference" />
+      <div ref={followerRef} className="fixed w-8 h-8 border border-[#1E3A8A]/30 rounded-full z-[9998] pointer-events-none" />
     </>
   );
 }
 
-/* ================= CINEMATIC LOGO ================= */
+/* ================= CINEMATIC LOGO (INTRO + FLOAT) ================= */
 function CinematicLogo() {
   const ref = useRef(null);
 
   useEffect(() => {
-    gsap.to(ref.current, {
-      rotation: 360,
-      duration: 120,
-      repeat: -1,
-      ease: "none",
-    });
+    const el = ref.current;
 
-    gsap.to(ref.current, {
-      y: 30,
-      duration: 6,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-    });
+    // INTRO ANIMATION (important: visible entrance)
+    gsap.fromTo(
+      el,
+      { y: 120, scale: 0.6, opacity: 0 },
+      { y: 0, scale: 1.15, opacity: 1, duration: 2, ease: "power3.out" }
+    );
 
-    gsap.to(ref.current, {
-      scale: 1.08,
-      duration: 5,
+    // FLOAT LOOP
+    gsap.to(el, {
+      y: -8,
+      duration: 4,
       repeat: -1,
       yoyo: true,
       ease: "sine.inOut",
@@ -57,47 +52,34 @@ function CinematicLogo() {
   }, []);
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center">
-      <div className="absolute w-[600px] h-[600px] bg-blue-500/10 blur-[120px] rounded-full" />
-
+    <div className="relative flex items-center justify-center">
       <img
         ref={ref}
         src="/logo.png"
-        className="w-[420px] h-[420px] object-contain rounded-full opacity-[0.05] border border-white/10 p-10"
+        className="w-[460px] object-contain z-10"
+        style={{ filter: "drop-shadow(0 0 25px rgba(30,58,138,0.25))" }}
       />
     </div>
   );
 }
 
-/* ================= NAVBAR ================= */
+/* ================= NAVBAR (FIXED NOT MOVING) ================= */
 function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   const links = ["home", "vision", "capability", "proof", "leadership", "contact"];
 
   return (
-    <div className={`fixed top-0 w-full z-50 transition-all duration-700 ${
-      scrolled
-        ? "bg-[#061B3A]/50 backdrop-blur-2xl border-b border-white/10 py-3"
-        : "bg-transparent py-6"
-    }`}>
+    <div className="fixed top-0 left-0 w-full z-[9999] bg-[#0B1B3A] border-b border-white/10 backdrop-blur-xl">
+      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center py-4">
 
-      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-
-        <div className="flex items-center gap-4 bg-white/5 px-4 py-2 rounded-full border border-white/10">
-          <img src="/logo.png" className="h-10 w-10 rounded-full object-cover" />
-          <div className="flex flex-col leading-none">
-            <span className="text-white text-[10px] tracking-[0.3em]">SMART SMILE WAY</span>
-            <span className="text-white/40 text-[9px] tracking-widest">EDUCATION GROUP</span>
+        {/* LOGO LEFT */}
+        <div className="flex items-center gap-3">
+         
+          <div className="text-white text-[11px] tracking-[0.25em]">
+            SMART SMILE WAY
           </div>
         </div>
 
+        {/* MENU */}
         <div className="hidden md:flex gap-8 text-[11px] tracking-[0.25em]">
           {links.map((l) => (
             <button
@@ -122,33 +104,35 @@ function Hero() {
   const ref = useRef(null);
 
   useEffect(() => {
-    gsap.fromTo(
-      ref.current,
-      { opacity: 0, scale: 1.1 },
-      { opacity: 1, scale: 1, duration: 1.5, ease: "power3.out" }
-    );
+    gsap.fromTo(ref.current, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 1.5 });
   }, []);
 
   return (
-    <section id="home" ref={ref}
-      className="relative h-screen flex items-center justify-center text-center overflow-hidden bg-[#061B3A]">
+    <section id="home" className="min-h-screen flex items-center justify-center bg-white pt-24">
 
-      <CinematicLogo />
+      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
 
-      <div className="z-10 max-w-4xl">
+        <CinematicLogo />
 
-        <p className="text-white/50 tracking-[0.3em] text-xs mb-6">
-          ORIGIN · EDUCATIONAL INVESTMENT GROUP
-        </p>
+        <div ref={ref}>
+          <p className="text-blue-400 tracking-[0.4em] text-xs mb-6">
+            EDUCATIONAL INVESTMENT GROUP
+          </p>
 
-        <h1 className="text-white text-5xl md:text-6xl font-[Playfair_Display] leading-tight">
-          We build, operate & transform
-          <br /> educational institutions
-        </h1>
+          <h1 className="text-[#0B1B3A] text-5xl font-[Playfair_Display] leading-tight">
+            Smart Smile Way
+            <br />
+            <span className="text-blue-500 text-3xl">
+              for A Brighter Future
+            </span>
+          </h1>
 
-        <p className="text-white/60 mt-8">
-          End-to-end systems for schools, nurseries and global education models.
-        </p>
+          <div className="w-24 h-[1px] bg-blue-200 my-8" />
+
+          <p className="text-blue-500/70 max-w-md">
+            We build, operate & transform educational institutions into global systems.
+          </p>
+        </div>
 
       </div>
     </section>
@@ -158,85 +142,134 @@ function Hero() {
 /* ================= SECTION ================= */
 function Section({ id, title, subtitle, children, dark }) {
   return (
-    <section id={id}
+    <section
+      id={id}
       className={`py-40 px-6 md:px-24 ${
-        dark ? "bg-[#061B3A] text-white" : "bg-white text-[#0B1B3A]"
-      }`}>
-
+        dark ? "bg-[#0B1B3A] text-white" : "bg-white text-[#0B1B3A]"
+      }`}
+    >
       <div className="max-w-6xl mx-auto">
 
-        <p className="text-xs tracking-[0.3em] opacity-60 mb-4">{subtitle}</p>
+        <p className="text-[11px] tracking-[0.35em] text-blue-400 mb-4">
+          {subtitle}
+        </p>
 
-        <h2 className="text-3xl font-[Playfair_Display] mb-16">{title}</h2>
+        <h2 className="text-4xl font-[Playfair_Display] mb-16">
+          {title}
+        </h2>
 
-        <div className="fade-up">{children}</div>
+        {children}
 
       </div>
     </section>
   );
 }
 
-/* ================= MAIN ================= */
-export default function HomePage() {
-  const rootRef = useRef(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray(".fade-up, .card, h2").forEach((el) => {
-        gsap.fromTo(
-          el,
-          { opacity: 0, y: 60 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 1.2,
-            scrollTrigger: {
-              trigger: el,
-              start: "top 85%",
-            },
-          }
-        );
-      });
-    }, rootRef);
-
-    return () => ctx.revert();
-  }, []);
+/* ================= FOOTER (NEW PREMIUM WEBSITE STYLE) ================= */
+function Footer() {
+  const links = ["home", "vision", "capability", "proof", "leadership", "contact"];
 
   return (
-    <div ref={rootRef} className="overflow-x-hidden">
+    <footer className="bg-[#06122B] text-white pt-20 pb-10 px-6">
+
+      <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-10">
+
+        {/* WHO WE ARE */}
+        <div>
+          <div className="flex items-center gap-3 mb-4">
+            <img src="/logo.png" className="w-40 h-40 rounded-full" />
+            <span className="tracking-[0.25em] text-sm">SMART SMILE WAY</span>
+          </div>
+          <p className="text-white/60 text-sm">
+            Educational Investment Group building future-ready institutions.
+          </p>
+        </div>
+
+        {/* MENU */}
+        <div>
+          <h3 className="mb-4 tracking-[0.2em] text-sm">NAVIGATION</h3>
+          <div className="space-y-2 text-white/60 text-sm">
+            {links.map((l) => (
+              <p key={l} className="hover:text-white cursor-pointer">
+                {l.toUpperCase()}
+              </p>
+            ))}
+          </div>
+        </div>
+
+        {/* SOCIAL */}
+        <div>
+          <h3 className="mb-4 tracking-[0.2em] text-sm">SOCIAL</h3>
+          <p className="text-white/60 text-sm">
+            Instagram · LinkedIn · Facebook
+          </p>
+        </div>
+
+      </div>
+
+      <div className="border-t border-white/10 mt-12 pt-6 text-center text-white/40 text-xs">
+        جميع الحقوق محفوظة © Smart Smile Way 2026
+      </div>
+
+    </footer>
+  );
+}
+
+/* ================= CONTACT (UPGRADED MESSAGE US) ================= */
+function Contact() {
+  return (
+    <Section id="contact" title="Contact" subtitle="START · CONNECT">
+      <div className="max-w-2xl space-y-6">
+
+        <h3 className="text-blue-400 tracking-[0.2em]">MESSAGE US</h3>
+
+        <input className="w-full border border-blue-100 p-3" placeholder="Your Name" />
+        <input className="w-full border border-blue-100 p-3" placeholder="Email" />
+        <textarea className="w-full border border-blue-100 p-3 h-32" placeholder="Your Message" />
+
+        <button className="bg-[#0B1B3A] text-white px-6 py-3">
+          Send Message
+        </button>
+
+      </div>
+    </Section>
+  );
+}
+
+/* ================= MAIN ================= */
+export default function HomePage() {
+  return (
+    <div>
 
       <Cursor />
       <Navbar />
+
       <Hero />
 
-      {/* ================= VISION + MISSION ================= */}
+      {/* VISION */}
       <Section id="vision" title="About Us" subtitle="VISION · MISSION">
-
         <div className="space-y-10">
-
           <div>
-            <h3 className="text-sm tracking-[0.3em] text-gray-400 mb-4">VISION</h3>
+            <h3 className="text-blue-400 mb-3">VISION</h3>
             <p>
-              To become a leading force in educational investment and management, transforming schools and nurseries into globally recognized, high-performance institutions through innovation and international standards.
+              To become a leading force in educational investment and management,
+              transforming schools and nurseries into globally recognized, high-performance institutions.
             </p>
           </div>
 
           <div>
-            <h3 className="text-sm tracking-[0.3em] text-gray-400 mb-4">MISSION</h3>
+            <h3 className="text-blue-400 mb-3">MISSION</h3>
             <p>
-              We design, develop, and operate international schools by integrating academic excellence, institutional governance, and financial efficiency, delivering scalable education models that meet global accreditation standards and workforce demands.
+              We design, develop, and operate international schools by integrating academic excellence,
+              institutional governance, and financial efficiency.
             </p>
           </div>
-
         </div>
-
       </Section>
 
-      {/* ================= SERVICES ================= */}
+      {/* SERVICES */}
       <Section id="capability" title="Our Services" subtitle="SYSTEMS · STRUCTURE" dark>
-
-        <div className="space-y-4">
-
+        <div className="space-y-4 text-white/80">
           <p>• Establishing and operating international schools</p>
           <p>• Cambridge, Edexcel, Oxford, Cognia accreditation</p>
           <p>• British, American & IB systems</p>
@@ -244,64 +277,40 @@ export default function HomePage() {
           <p>• Educational strategy & structure development</p>
           <p>• Teacher training & curriculum preparation</p>
           <p>• Workforce development & job placement</p>
-
         </div>
-
       </Section>
 
-      {/* ================= ACHIEVEMENTS ================= */}
+      {/* ACHIEVEMENTS */}
       <Section id="proof" title="Achievements" subtitle="IMPACT · SCALE">
-
         <div className="grid md:grid-cols-3 gap-10 text-center">
-
-          <div className="card">
-            <h3 className="text-5xl">4</h3>
-            <p className="opacity-60">Schools</p>
-          </div>
-
-          <div className="card">
-            <h3 className="text-5xl">5</h3>
-            <p className="opacity-60">Nurseries</p>
-          </div>
-
-          <div className="card">
-            <h3 className="text-5xl">25</h3>
-            <p className="opacity-60">Accreditations</p>
-          </div>
-
+          <div><h3 className="text-5xl">4</h3><p>Schools</p></div>
+          <div><h3 className="text-5xl">5</h3><p>Nurseries</p></div>
+          <div><h3 className="text-5xl">25</h3><p>Accreditations</p></div>
         </div>
-
       </Section>
 
-      {/* ================= LEADERSHIP ================= */}
+      {/* LEADERSHIP */}
       <Section id="leadership" title="Executive Team" subtitle="PEOPLE · LEADERSHIP" dark>
-
         <div className="grid md:grid-cols-2 gap-10">
-
           {[
-            ["Eng. Sameer Abdullah", "Founder & CEO — Smart Smile Way\nEducation Consultant for British and American systems"],
-            ["Eng. Ibrahim", "Co-Founder — Smart Smile Way\nEducation Consultant"],
+            ["Eng. Sameer Abdullah", "Founder & CEO"],
+            ["Eng. Ibrahim", "Co-Founder"],
             ["Dr. Heba Sultan", "General Manager"],
             ["Eng. Mai Ashraf", "Tech Director"],
             ["Dr. Norhan Khaled", "American Education Manager"],
             ["Mrs. Samar Mansour", "British Education Manager"],
           ].map(([name, role], i) => (
-            <div key={i} className="card border border-white/10 p-8 rounded-xl">
-              <h3 className="text-lg font-medium">{name}</h3>
-              <p className="text-white/60 mt-3 whitespace-pre-line">{role}</p>
+            <div key={i} className="border border-white/10 p-8 rounded-xl">
+              <h3>{name}</h3>
+              <p className="text-white/60 mt-3">{role}</p>
             </div>
           ))}
-
         </div>
-
       </Section>
 
-      {/* ================= CONTACT ================= */}
-      <Section id="contact" title="Contact" subtitle="START · CONNECT">
+      <Contact />
 
-        <p>Contact form goes here</p>
-
-      </Section>
+      <Footer />
 
     </div>
   );
